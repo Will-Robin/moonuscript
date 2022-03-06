@@ -1,4 +1,4 @@
-function createTableElement(filename)
+function create_table_element(filename)
   -- Reads in the file given by the path filename
   -- and outputs a new pandoc table element
 
@@ -25,9 +25,11 @@ function CodeBlock(e)
   end
 
   if string.match(filename,"csv") then
-    local new_section = createTableElement(filename)
+
+    local new_section = create_table_element(filename)
 
     if new_section ~= nil then
+
       local ast_table = new_section.blocks[1]
 
       ast_table.caption.short = {pandoc.Str(caption)}
@@ -49,19 +51,19 @@ function Div(e)
     return e
   end
 
-  
   if string.match(filename,"csv") then
-    local f = io.open(filename, "r")
-    local csv = f:read("*all")
-    f:close()
 
-    local new_section = pandoc.read(csv, "csv")
+    local new_section = create_table_element(filename)
+
+    if new_section ~= nil then
 
     local ast_table = new_section.blocks[1]
 
     ast_table.caption.short = {pandoc.Str(caption)}
 
     return ast_table
+  end
+
   else
     return e
   end

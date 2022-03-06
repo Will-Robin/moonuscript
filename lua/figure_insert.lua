@@ -2,7 +2,6 @@
 -- Example: {#f:fig1ref:t}
 local patt = '{%#%l:.+:%a}'
 local id_patt = ":(.+):"
-local type_patt =  "{#(.+):.+:%a}"
 local part_of_text_patt = ":(%a)}"
 
 -- Variables
