@@ -1,5 +1,6 @@
 ---
-figure: Figures
+figure_dir: Figures
+caption_dir: Figures
 ---
 
 # Inserting figures and captions using tags
