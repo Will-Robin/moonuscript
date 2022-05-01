@@ -1,29 +1,26 @@
-all: figure_insertion_example.pdf code_block_to_table_example.pdf \
-	figure_tags_example.pdf extract_comments.md
+all: output/figure_insertion_example.pdf output/code_block_to_table_example.pdf \
+	output/figure_tags_example.pdf output/extract_comments.md
 
-figure_insertion_example.pdf: figure_insertion_example.md ../lua/figure_insert.lua
+output/figure_insertion_example.pdf: figure_insertion_example.md ../lua/figure_insert.lua
 	pandoc -f markdown -t pdf figure_insertion_example.md \
-	--lua-filter=../lua/figure_insert.lua -s -o figure_insertion_example.pdf
+	--lua-filter=../lua/figure_insert.lua -s -o output/figure_insertion_example.pdf
 
-code_block_to_table_example.pdf: code_block_to_table_example.md ../lua/code_block_table.lua
+output/code_block_to_table_example.pdf: code_block_to_table_example.md ../lua/code_block_table.lua
 	pandoc -f markdown -t pdf code_block_to_table_example.md \
-	--lua-filter=../lua/code_block_table.lua -s -o code_block_to_table_example.pdf
+	--lua-filter=../lua/code_block_table.lua -s -o output/code_block_to_table_example.pdf
 
-figure_tags_example.pdf: figure_tags_example.md ../lua/figure_numbers.lua
+output/figure_tags_example.pdf: figure_tags_example.md ../lua/figure_numbers.lua
 	pandoc -f markdown -t pdf figure_tags_example.md \
-	--lua-filter=../lua/figure_numbers.lua -s -o figure_tags_example.pdf
+	--lua-filter=../lua/figure_numbers.lua -s -o output/figure_tags_example.pdf
 
-extract_comments.md: lorem_ipsum_comments.docx ../lua/extract_comments.lua
+output/extract_comments.md: lorem_ipsum_comments.docx ../lua/extract_comments.lua
 	pandoc -f docx -t markdown lorem_ipsum_comments.docx \
 	--track-changes=all \
-	--lua-filter=../lua/extract_comments.lua -s -o extract_comments.md
+	--lua-filter=../lua/extract_comments.lua -s -o output/extract_comments.md
 
 # Cleaning up png files.
 .PHONY: clean
 
 clean:
-	rm figure_insertion_example.pdf
-	rm code_block_to_table_example.pdf
-	rm figure_tags_example.pdf
-	rm extract_comments.md
+	rm output/*
 
