@@ -1,7 +1,13 @@
--- Significantly modified from https://github.com/databio/sciquill/tree/master/pandoc_filters/multi-refs
--- pandoc.utils.make_sections exists since pandoc 2.8
+--[[
+Adapted from
+https://github.com/pandoc/lua-filters/tree/master/multiple-bibliographies
+
+To prevent duplication of reference entries between bibliographies, set
+split_ref_no_duplicates: true in the document metadata yaml.
+]]
+
 if PANDOC_VERSION == nil then -- if pandoc_version < 2.1
-  error("ERROR: pandoc >= 2.1 required for multi-refs filter")
+  error("ERROR: pandoc >= 2.1 required for refs filter")
 else
   PANDOC_VERSION:must_be_at_least {2,8}
 end
@@ -41,9 +47,9 @@ local function run_citeproc(doc)
 end
 
 local function check_div(div)
-  -- Populate the multi-refs div with references
-  if table.contains(div.classes, "multi-refs") then
-    print("Populating bibliography for multi-refs div, number: ", iref)
+  -- Populate a refs div with references
+  if table.contains(div.classes, "refs") then
+    print("Adding references into a ref div number: ", iref)
     div.content = split_refs[iref]
     iref = iref+1
   end
@@ -58,19 +64,24 @@ local function make_refs_subset(allrefs, subset_ids)
 
   for k,v in pairs(allrefs.content) do
     already_included = false
-    for idnum, refid in pairs(subset_ids) do 
+    for idnum, refid in pairs(subset_ids) do
       if "ref-"..refid==v.identifier then
+
         print(k, idnum, refid, v.identifier)
+
         if processed_entries[v.identifier] then
-          print("reference included in previous bibliography:", v.identifier)
+          print("Reference included in previous bibliography:", v.identifier)
           already_included = true
         end
-        if meta['multiref_no_duplicates'] and already_included then
+
+        if meta['split_ref_no_duplicates'] and already_included then
           print("skipping")
         else
+
           local_refs_subset[i] = v
           i = i+1
           processed_entries[v.identifier] = v.identifier
+
         end
       end
     end
@@ -95,15 +106,15 @@ local function accumulate(inline)
 end
 
 local function populate_refs(div)
-  -- Iterate through the div to find the one which contains "multi-refs" in its
+  -- Iterate through the div to find the one which contains "refs" in its
   -- classes. The current contents of accumulated_refids is deposited inside,
   -- and accumulated_refids is emptied for a new collection of references to be
   -- scraped in further iterations.
   for i,p in pairs(div) do
       if type(p) == 'table' then
         for k,v in pairs(p) do
-          if v.classes ~= nil and table.contains(v.classes, "multi-refs") then
-            print("Found a multi-refs div. Ref count:", #accumulated_refids)
+          if v.classes ~= nil and table.contains(v.classes, "refs") then
+            print("Found refs div. Ref count:", #accumulated_refids)
             make_refs_subset(allrefs, accumulated_refids)
             accumulated_refids = {}
           end
@@ -130,7 +141,7 @@ local function traverse_doc(doc)
 
   for block_id,block_data in pairs(doc.blocks) do
     -- Walk through each block of the document and apply filters which
-    -- collect references in Inlines, then deposit them in "multi-ref" class
+    -- collect references in Inlines, then deposit them in "ref" class
     -- divs.
     pandoc.walk_block(
                         block_data,
