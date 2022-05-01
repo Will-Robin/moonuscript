@@ -1,5 +1,6 @@
 all: output/figure_insertion_example.pdf output/code_block_to_table_example.pdf \
-	output/figure_tags_example.pdf output/extract_comments.md
+	output/figure_tags_example.pdf output/extract_comments.md \
+	output/split_bibliography_example.pdf
 
 output/figure_insertion_example.pdf: figure_insertion_example.md ../lua/figure_insert.lua
 	pandoc -f markdown -t pdf figure_insertion_example.md \
@@ -18,6 +19,12 @@ output/extract_comments.md: lorem_ipsum_comments.docx ../lua/extract_comments.lu
 	--track-changes=all \
 	--lua-filter=../lua/extract_comments.lua -s -o output/extract_comments.md
 
+output/split_bibliography_example.pdf: split_bibliography.md ../lua/split_refs.lua
+	pandoc -f markdown -t pdf split_bibliography.md \
+	--citeproc \
+	--lua-filter=../lua/split_refs.lua \
+	--pdf-engine=lualatex \
+	-o output/split_bibliography_example.pdf
 # Cleaning up png files.
 .PHONY: clean
 
