@@ -15,3 +15,7 @@ Filters are in the `lua` directory. Examples are in the `example_files` director
 `figure_insert.lua` inserts a figure using a tag in the markdown.
 
 `figure_numbers.lua` automatically numbers instances of figure tags in a document.
+
+`extract_comments.lua` extracts the comments from a `docx` file and creates a separate document containing the information contained in them.
+
+`split_refs.lua` creates 'split' bibliographies within a document wherever a `<div id="refs"></div>` is placed. Is is possible to avoid duplicating references across the bibliographies. Adapted from [a similar filter on the Pandoc Lua Filters repository](https://github.com/pandoc/lua-filters/tree/master/multiple-bibliographies).
