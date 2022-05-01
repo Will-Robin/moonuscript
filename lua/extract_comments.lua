@@ -1,3 +1,12 @@
+--[[
+Filter to extract the comments from a docx file and create a separate document
+containing only the comment contents and information.
+
+For this filter to work, the --track-changes=all flag must be used,
+e.g.
+pandoc -f docx -t markdown example.docx --track-changes=all -o comments.md.
+]]
+
 local read_state = false
 local current_author
 local current_date
@@ -17,7 +26,6 @@ local function process_date_time(date_time)
 
   local date_pattern = "(%d+%-%d+%-%d+)"
   local time_pattern = "%d+%:%d+%:%d+"
-
 
   local date = string.match(date_time, date_pattern)
   local time = string.match(date_time, time_pattern)
