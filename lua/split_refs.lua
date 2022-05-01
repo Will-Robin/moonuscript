@@ -1,11 +1,13 @@
 --[[
-Adapted from
-https://github.com/pandoc/lua-filters/tree/master/multiple-bibliographies
-and
-https://github.com/databio/sciquill/tree/master/pandoc_filters/multi-refs
+    A filter to add references into multiple reference sections in a document.
 
-To prevent duplication of reference entries between bibliographies, set
-split_ref_no_duplicates: true in the document metadata yaml.
+    Adapted from
+    https://github.com/pandoc/lua-filters/tree/master/multiple-bibliographies
+    and
+    https://github.com/databio/sciquill/tree/master/pandoc_filters/multi-refs
+
+    To allow duplication of reference entries between bibliographies, set
+    split_ref_no_duplicates: false in the document metadata yaml.
 ]]
 
 if PANDOC_VERSION == nil then -- if pandoc_version < 2.1
@@ -19,6 +21,8 @@ local utils = require('pandoc.utils')
 local ref_class = "refs" -- class name for reference divs
 
 local meta -- Container for the document metadata
+
+local no_duplicates = true
 
 -- Containers for reference data
 local allrefs -- Container for all of the references in the document
@@ -72,7 +76,7 @@ local function make_refs_subset(allrefs, subset_ids)
           already_included = true
         end
 
-        if meta['split_ref_no_duplicates'] and already_included then
+        if no_duplicates and already_included then
           print("Skipping", refid, "as duplicated reference between sections.")
         else
           local_refs_subset[i] = v
@@ -170,7 +174,12 @@ function set_up_document(doc)
   meta = doc.meta
   section_refs_level = tonumber(meta["section-refs-level"]) or 1
   orig_bibliography = meta.bibliography
-  meta.bibliography = meta['section-refs-bibliography'] or meta.bibliography
+  meta.bibliography = meta["section-refs-bibliography"] or meta.bibliography
+
+  if meta["split_ref_no_duplicates"] ~= nil then
+    no_duplicates = meta["split_ref_no_duplicates"]
+  end
+
   local sections = utils.make_sections(true, nil, doc.blocks)
   return pandoc.Pandoc(sections, doc.meta)
 end
