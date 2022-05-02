@@ -18,7 +18,7 @@ local centering = "\\centering"
 local begin_wrapfigure = "\\begin{wrapfigure}{r}"
 local end_wrapfigure = "\\end{wrapfigure}"
 
-local function create_latex_code(stripped_caption, size, target)
+local function create_wrapped_figure(stripped_caption, size, target)
 
   -- begin the wrapfig environment
   local latex_begin = begin_wrapfigure..'{' .. size .. 'in}'..centering
@@ -66,7 +66,7 @@ function wrapfig(img)
 
     if FORMAT == 'latex' then
 
-      local latex_code = create_latex_code(stripped_caption, size, target)
+      local latex_code = create_wrapped_figure(stripped_caption, size, target)
 
       return latex_code
 
