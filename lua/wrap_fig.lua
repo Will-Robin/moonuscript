@@ -14,33 +14,26 @@
 local FLAG_PAT = '{(%d*%.?%d+)}'
 local remove_patt = '{%d+%.+%d+}'
 
-local centering = "\\centering"
-local begin_wrapfigure = "\\begin{wrapfigure}{r}"
-local end_wrapfigure = "\\end{wrapfigure}"
+local template = [[
+\begin{wrapfigure}{r}{<<size>>in}
+  \begin{center}
+  \includegraphics{<<target>>}
+  \end{center}
+  \caption{<<caption>>}
+\end{wrapfigure}
+]]
+
+local size_patt = "<<size>>"
+local target_patt = "<<target>>"
+local caption_patt = "<<caption>>"
 
 local function create_wrapped_figure(stripped_caption, size, target)
 
-  -- begin the wrapfig environment
-  local latex_begin = begin_wrapfigure..'{' .. size .. 'in}'..centering
+  local latex_string_size = string.gsub(template, size_patt, size)
+  latex_string_target = string.gsub(latex_string_size, target_patt, target)
+  latex_string_caption = string.gsub(latex_string_target, caption_patt, stripped_caption)
 
-  -- containers for the LaTeX code that will be created
-  local latex_fig
-  local latex_end
-  local latex_code
-
-  if string.len(stripped_caption) > 0 then
-
-    latex_fig = latex_begin..'\\includegraphics{'..target..'}\\caption{'
-    latex_end = '}'..end_wrapfigure
-    latex_code = pandoc.RawInline(FORMAT, latex_fig..stripped_caption..latex_end)
-
-  else
-
-    latex_fig = latex_begin..'\\includegraphics{'..target..'}'
-    latex_end = end_wrapfigure
-    latex_code = pandoc.RawInline(FORMAT, latex_fig..latex_end)
-
-  end
+  latex_code = pandoc.RawInline(FORMAT, latex_string_caption)
 
   return latex_code
 
