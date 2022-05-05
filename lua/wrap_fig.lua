@@ -47,25 +47,21 @@ function wrapfig(img)
   local attributes = img.attr
   local caption = pandoc.utils.stringify(img.caption)
 
-  -- get the figure size if the pattern is in the caption
-  local wrap_match = string.match(caption, FLAG_PAT)
+  local wrap_attr =  img.attr.attributes["wrap"]
 
-  if wrap_match ~= nil then
+  if wrap_attr ~= nil then
 
-    local size = wrap_match
-
-    -- Strip tag from the caption
-    local stripped_caption = string.gsub(caption, remove_patt, "")
+    local size = wrap_attr
 
     if FORMAT == 'latex' then
 
-      local latex_code = create_wrapped_figure(stripped_caption, size, target)
+      local latex_code = create_wrapped_figure(caption, size, target)
 
       return latex_code
 
     else
       -- return the image without the caption size token.
-      return pandoc.Image(stripped_caption, target, title, attributes)
+      return pandoc.Image(caption, target, title, attributes)
 
     end
   end
