@@ -26,12 +26,13 @@ local template = [[
 local size_patt = "<<size>>"
 local target_patt = "<<target>>"
 local caption_patt = "<<caption>>"
+local latex_caption_patt = "caption{(.+)}"
 
-local function create_wrapped_figure(stripped_caption, size, target)
+local function create_wrapped_figure(caption, size, target)
 
   local latex_string_size = string.gsub(template, size_patt, size)
   latex_string_target = string.gsub(latex_string_size, target_patt, target)
-  latex_string_caption = string.gsub(latex_string_target, caption_patt, stripped_caption)
+  latex_string_caption = string.gsub(latex_string_target, caption_patt, caption)
 
   latex_code = pandoc.RawInline(FORMAT, latex_string_caption)
 
@@ -45,7 +46,9 @@ function wrapfig(img)
   local target = img.src
   local title = img.title
   local attributes = img.attr
-  local caption = pandoc.utils.stringify(img.caption)
+  local caption = pandoc.Pandoc({img.caption})
+
+  caption_latex = pandoc.write(caption,'latex')
 
   local wrap_attr =  img.attr.attributes["wrap"]
 
@@ -55,7 +58,7 @@ function wrapfig(img)
 
     if FORMAT == 'latex' then
 
-      local latex_code = create_wrapped_figure(caption, size, target)
+      local latex_code = create_wrapped_figure(caption_latex, size, target)
 
       return latex_code
 
