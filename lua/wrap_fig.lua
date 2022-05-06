@@ -5,9 +5,6 @@
   https://github.com/scotthartley/pandoc-wrapfig
 
   Requires the wrapfig package in the LaTeX template.
-
-  Need to add a {x} tag to the end of the figure captions, where x is the width
-  of the wrap in inches.
 ]]
 
 -- Should match integers and decimals
@@ -15,7 +12,7 @@ local FLAG_PAT = '{(%d*%.?%d+)}'
 local remove_patt = '{%d+%.+%d+}'
 
 local template = [[
-\begin{wrapfigure}{r}{<<size>>in}
+\begin{wrapfigure}{r}{<<size>>cm}
   \begin{center}
   \includegraphics{<<target>>}
   \end{center}
