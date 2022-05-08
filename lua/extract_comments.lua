@@ -31,7 +31,6 @@ local function process_date_time(date_time)
   local time = string.match(date_time, time_pattern)
 
   return date, time
-
 end
 
 local function dump_comment()
@@ -40,22 +39,16 @@ local function dump_comment()
     new document and wipe their storage container variables.
   ]]
 
-  local date_string,time_string = process_date_time(current_date)
-  local auth = pandoc.Header(2, pandoc.Str(current_author.."\n"))
+  local date_string, time_string = process_date_time(current_date)
+  local auth = pandoc.Header(2, pandoc.Str(current_author .. "\n"))
 
-  local date = pandoc.Str(date_string.." @ "..time_string.."\n")
+  local date = pandoc.Str(date_string .. " @ " .. time_string .. "\n")
 
-  local comment = pandoc.Str(
-                    current_comment:sub(1,-2).."\n\n"
-  )
+  local comment = pandoc.Str(current_comment:sub(1, -2) .. "\n\n")
 
-  local quoted_text = pandoc.BlockQuote(
-                        pandoc.Str(
-                          selected_text:sub(1,-2).."\n"
-                        )
-  )
+  local quoted_text = pandoc.BlockQuote(pandoc.Str(selected_text:sub(1, -2) .. "\n"))
 
-  local comment_info = pandoc.Inlines({date})
+  local comment_info = pandoc.Inlines({ date })
   local info = pandoc.Para(comment_info)
 
   local comment_content = pandoc.Para(comment)
@@ -69,7 +62,6 @@ local function dump_comment()
   current_date = ""
   current_comment = ""
   selected_text = ""
-
 end
 
 local function check_span(subject)
@@ -89,14 +81,12 @@ local function check_span(subject)
     current_author = subject.attr.attributes.author
     current_date = subject.attr.attributes.date
 
-    subject.content:walk{
-      Str = function (str_elem)
-        current_comment = current_comment..str_elem.text.." "
-      end
-    }
-
+    subject.content:walk({
+      Str = function(str_elem)
+        current_comment = current_comment .. str_elem.text .. " "
+      end,
+    })
   end
-
 end
 
 local function load_text(str_elem)
@@ -105,7 +95,7 @@ local function load_text(str_elem)
   ]]
 
   if read_state then
-    selected_text = selected_text..str_elem.text.." "
+    selected_text = selected_text .. str_elem.text .. " "
   end
 end
 
@@ -116,21 +106,15 @@ local function traverse_doc(doc)
 
   -- Iterate through the blocks of the document.
   for block_id, block_data in pairs(doc.blocks) do
-    pandoc.walk_block(
-                        block_data,
-                        {
-                          Span =  check_span,
-                          Str = load_text
-                        }
-                      )
-
+    pandoc.walk_block(block_data, {
+      Span = check_span,
+      Str = load_text,
+    })
   end
 
   return pandoc.Pandoc(compiled_comments)
-
 end
 
 return {
-  {Pandoc = traverse_doc}
+  { Pandoc = traverse_doc },
 }
-

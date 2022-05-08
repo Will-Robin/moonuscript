@@ -12,7 +12,6 @@ function create_table_element(filename)
   end
 
   return nil
-
 end
 
 function CodeBlock(e)
@@ -24,15 +23,13 @@ function CodeBlock(e)
     return e
   end
 
-  if string.match(filename,"csv") then
-
+  if string.match(filename, "csv") then
     local new_section = create_table_element(filename)
 
     if new_section ~= nil then
-
       local ast_table = new_section.blocks[1]
 
-      ast_table.caption.short = {pandoc.Str(caption)}
+      ast_table.caption.short = { pandoc.Str(caption) }
 
       return ast_table
     end
@@ -51,19 +48,16 @@ function Div(e)
     return e
   end
 
-  if string.match(filename,"csv") then
-
+  if string.match(filename, "csv") then
     local new_section = create_table_element(filename)
 
     if new_section ~= nil then
+      local ast_table = new_section.blocks[1]
 
-    local ast_table = new_section.blocks[1]
+      ast_table.caption.short = { pandoc.Str(caption) }
 
-    ast_table.caption.short = {pandoc.Str(caption)}
-
-    return ast_table
-  end
-
+      return ast_table
+    end
   else
     return e
   end

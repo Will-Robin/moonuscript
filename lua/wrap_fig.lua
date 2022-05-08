@@ -8,8 +8,8 @@
 ]]
 
 -- Should match integers and decimals
-local FLAG_PAT = '{(%d*%.?%d+)}'
-local remove_patt = '{%d+%.+%d+}'
+local FLAG_PAT = "{(%d*%.?%d+)}"
+local remove_patt = "{%d+%.+%d+}"
 
 local template = [[
 \begin{wrapfigure}{r}{<<size>>cm}
@@ -26,7 +26,6 @@ local caption_patt = "<<caption>>"
 local latex_caption_patt = "caption{(.+)}"
 
 local function create_wrapped_figure(caption, size, target)
-
   local latex_string_size = string.gsub(template, size_patt, size)
   latex_string_target = string.gsub(latex_string_size, target_patt, target)
   latex_string_caption = string.gsub(latex_string_target, caption_patt, caption)
@@ -34,40 +33,33 @@ local function create_wrapped_figure(caption, size, target)
   latex_code = pandoc.RawInline(FORMAT, latex_string_caption)
 
   return latex_code
-
 end
 
 function wrapfig(img)
-
   -- Extract attributes to create new Image elements
   local target = img.src
   local title = img.title
   local attributes = img.attr
-  local caption = pandoc.Pandoc({img.caption})
+  local caption = pandoc.Pandoc({ img.caption })
 
-  caption_latex = pandoc.write(caption,'latex')
+  caption_latex = pandoc.write(caption, "latex")
 
-  local wrap_attr =  img.attr.attributes["wrap"]
+  local wrap_attr = img.attr.attributes["wrap"]
 
   if wrap_attr ~= nil then
-
     local size = wrap_attr
 
-    if FORMAT == 'latex' then
-
+    if FORMAT == "latex" then
       local latex_code = create_wrapped_figure(caption_latex, size, target)
 
       return latex_code
-
     else
       -- return the image without the caption size token.
       return pandoc.Image(caption, target, title, attributes)
-
     end
   end
-
 end
 
 return {
-  {Image = wrapfig}
+  { Image = wrapfig },
 }
