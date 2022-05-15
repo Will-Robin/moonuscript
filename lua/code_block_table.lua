@@ -1,6 +1,10 @@
 function create_table_element(filename)
-  -- Reads in the file given by the path filename
-  -- and outputs a new pandoc table element
+  --[[
+    Reads in the file given by the path filename
+    and outputs a new pandoc table element 
+    filename: string
+    new_section: pandoc.Table or nil
+  ]]
 
   local f = io.open(filename, "r")
 
@@ -15,7 +19,11 @@ function create_table_element(filename)
 end
 
 function CodeBlock(e)
-  -- turns a CodeBlock element into a table
+  --[[
+    turns a CodeBlock element into a table
+    e: CodeBlock element
+  ]]
+
   local caption = e.text
   local filename = e.attr.classes[1]
 

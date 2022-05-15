@@ -5,12 +5,18 @@
   https://github.com/scotthartley/pandoc-wrapfig
 
   Requires the wrapfig package in the LaTeX template.
+
+  Example markdown:
+  [Figure caption](/path/to/image.png){wrap=1.0}
+
+  Where wrap is given in cm.
 ]]
 
 -- Should match integers and decimals
 local FLAG_PAT = "{(%d*%.?%d+)}"
 local remove_patt = "{%d+%.+%d+}"
 
+-- wrap units = cm
 local template = [[
 \begin{wrapfigure}{r}{<<size>>cm}
   \begin{center}
@@ -26,6 +32,11 @@ local caption_patt = "<<caption>>"
 local latex_caption_patt = "caption{(.+)}"
 
 local function create_wrapped_figure(caption, size, target)
+  --[[
+    Create the LaTeX code for a wrapped figure using arguments and convert it
+    into a Pandoc RawInline element.
+  ]]
+
   local latex_string_size = string.gsub(template, size_patt, size)
   latex_string_target = string.gsub(latex_string_size, target_patt, target)
   latex_string_caption = string.gsub(latex_string_target, caption_patt, caption)
