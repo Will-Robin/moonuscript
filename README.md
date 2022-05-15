@@ -26,8 +26,8 @@ Filters are in the `lua` directory. Examples are in the `example_files` director
 
 If you like this, you may like:
 
-[The Pandoc Lua Filters Documentation](https://pandoc.org/lua-filters.html)
-[The official Pandoc Lua Filters Repo](https://github.com/pandoc/lua-filters)
-[Quarto](https://quarto.org)
-[RMarkdown](https://rmarkdown.rstudio.com)
+- [The Pandoc Lua Filters Documentation](https://pandoc.org/lua-filters.html)
+- [The official Pandoc Lua Filters Repo](https://github.com/pandoc/lua-filters)
+- [Quarto](https://quarto.org)
+- [RMarkdown](https://rmarkdown.rstudio.com)
 
