@@ -19,3 +19,15 @@ Filters are in the `lua` directory. Examples are in the `example_files` director
 `extract_comments.lua` extracts the comments from a `docx` file and creates a separate document containing the information contained in them.
 
 `split_refs.lua` creates 'split' bibliographies within a document wherever a `<div id="refs"></div>` is placed. Is is possible to avoid duplicating references across the bibliographies. Adapted from [a similar filter on the Pandoc Lua Filters repository](https://github.com/pandoc/lua-filters/tree/master/multiple-bibliographies).
+
+`wrap_fig.lua` lua adaptation of [pandoc-wrapfig](https://github.com/scotthartley/pandoc-wrapfig) for wrapping figures in LaTeX/pdf output.
+
+## Related
+
+If you like this, you may like:
+
+[The Pandoc Lua Filters Documentation](https://pandoc.org/lua-filters.html)
+[The official Pandoc Lua Filters Repo](https://github.com/pandoc/lua-filters)
+[Quarto](https://quarto.org)
+[RMarkdown](https://rmarkdown.rstudio.com)
+
