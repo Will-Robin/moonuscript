@@ -32,45 +32,48 @@ local caption_patt = "<<caption>>"
 local latex_caption_patt = "caption{(.+)}"
 
 local function create_wrapped_figure(caption, size, target)
-  --[[
+    --[[
     Create the LaTeX code for a wrapped figure using arguments and convert it
     into a Pandoc RawInline element.
   ]]
 
-  local latex_string_size = string.gsub(template, size_patt, size)
-  latex_string_target = string.gsub(latex_string_size, target_patt, target)
-  latex_string_caption = string.gsub(latex_string_target, caption_patt, caption)
+    local latex_string_size = string.gsub(template, size_patt, size)
+    local latex_string_target = string.gsub(latex_string_size, target_patt, target)
+    local latex_string_caption = string.gsub(latex_string_target, caption_patt, caption)
 
-  latex_code = pandoc.RawInline(FORMAT, latex_string_caption)
+    local latex_code = pandoc.RawInline(FORMAT, latex_string_caption)
 
-  return latex_code
+    return latex_code
 end
 
-function wrapfig(img)
-  -- Extract attributes to create new Image elements
-  local target = img.src
-  local title = img.title
-  local attributes = img.attr
-  local caption = pandoc.Pandoc({ img.caption })
+local function wrapfig(img)
+    --[[
+    Extract attributes to create new Image elements
+  ]]
+    local target = img.src
+    local title = img.title
+    local attributes = img.attr
+    local caption = pandoc.Pandoc({ img.caption })
 
-  caption_latex = pandoc.write(caption, "latex")
+    local caption_latex = pandoc.write(caption, "latex")
 
-  local wrap_attr = img.attr.attributes["wrap"]
+    local wrap_attr = img.attr.attributes["wrap"]
 
-  if wrap_attr ~= nil then
-    local size = wrap_attr
+    if wrap_attr ~= nil then
+        local size = wrap_attr
 
-    if FORMAT == "latex" then
-      local latex_code = create_wrapped_figure(caption_latex, size, target)
+        if FORMAT == "latex" then
+            local latex_code = create_wrapped_figure(caption_latex, size, target)
 
-      return latex_code
-    else
-      -- return the image without the caption size token.
-      return pandoc.Image(caption, target, title, attributes)
+            return latex_code
+        else
+            -- could add other wrapping mechanisms here.
+            -- return the image without the caption size token.
+            return pandoc.Image(caption, target, title, attributes)
+        end
     end
-  end
 end
 
 return {
-  { Image = wrapfig },
+    { Image = wrapfig },
 }
