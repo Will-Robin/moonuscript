@@ -9,7 +9,8 @@ This is a section of text with a reference [@mettetal2008], and another [@meyer2
 
 ## First Section References
 
-<div class="refs"></div>
+:::refs
+:::
 
 # Second Section
 
@@ -17,5 +18,5 @@ This is a new section containing two new references [@muchowska2019;@nagorski200
 
 ## Second Section Refs
 
-<div class="refs"></div>
-
+:::refs
+:::
