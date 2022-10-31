@@ -1,4 +1,4 @@
-function create_table_element(filename)
+local function create_table_element(filename)
   --[[
     Reads in the file given by the path filename
     and outputs a new pandoc table element
@@ -18,37 +18,13 @@ function create_table_element(filename)
   return nil
 end
 
-function CodeBlock(e)
+local function code_block_to_table(e)
   --[[
     turns a CodeBlock element into a table
     e: CodeBlock element
   ]]
 
   local caption = e.text
-  local filename = e.attr.classes[1]
-
-  if filename == nil then
-    return e
-  end
-
-  if string.match(filename, "csv") then
-    local new_section = create_table_element(filename)
-
-    if new_section ~= nil then
-      local ast_table = new_section.blocks[1]
-
-      ast_table.caption.short = { pandoc.Str(caption) }
-
-      return ast_table
-    end
-  else
-    return e
-  end
-end
-
-function Div(e)
-  -- turns a Div element into a table
-  local caption = e.content[1].content[1]
 
   local filename = e.attr.classes[1]
 
@@ -70,3 +46,7 @@ function Div(e)
     return e
   end
 end
+
+return {
+  {CodeBlock = code_block_to_table},
+}
