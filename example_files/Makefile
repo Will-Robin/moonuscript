@@ -1,4 +1,4 @@
-all: output/figure_insertion_example.pdf output/code_block_to_table_example.pdf \
+all: output/figure_insertion_example.pdf output/include_csv_table_example.pdf \
 	output/figure_tags_example.pdf output/extract_comments.md \
 	output/split_bibliography_example.pdf \
 	output/wrap_fig_example.pdf
@@ -7,9 +7,9 @@ output/figure_insertion_example.pdf: figure_insertion_example.md ../lua/figure_i
 	pandoc -f markdown -t pdf figure_insertion_example.md \
 	--lua-filter=../lua/figure_insert.lua -s -o output/figure_insertion_example.pdf
 
-output/code_block_to_table_example.pdf: code_block_to_table_example.md ../lua/code_block_table.lua
-	pandoc -f markdown -t pdf code_block_to_table_example.md \
-	--lua-filter=../lua/code_block_table.lua -s -o output/code_block_to_table_example.pdf
+output/include_csv_table_example.pdf: include_csv_table_example.md ../lua/include_csv_table.lua
+	pandoc -f markdown -t pdf include_csv_table_example.md \
+	--lua-filter=../lua/include_csv_table.lua -s -o output/include_csv_table_example.pdf
 
 output/figure_tags_example.pdf: figure_tags_example.md ../lua/figure_numbers.lua
 	pandoc -f markdown -t pdf figure_tags_example.md \
