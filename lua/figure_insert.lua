@@ -1,17 +1,19 @@
--- pattern for finding figure references
--- Example: {#f:fig1ref:i}
+PANDOC_VERSION:must_be_at_least("2.17")
+
+--- pattern for finding figure references
+--- Example: {#f:fig1ref:i}
 local patt = "{%#%l:.+:%a}"
 local id_patt = ":(.+):"
 local part_of_text_patt = ":(%a)}"
 
--- Variables
+--- Variables
 local img_filetype = ".png"
 local img_caption_filetype = ".md"
 local fig_dir = ""
 local caption_dir = ""
 
+--- Check if a file exists.
 local function file_exists(file)
-  -- Check if a file exists.
   local f = io.open(file, "rb")
   if f then
     f:close()
@@ -19,8 +21,8 @@ local function file_exists(file)
   return f ~= nil
 end
 
-function text_from_file(fname)
-  -- Get the text contents from a file.
+--- Get the text contents from a file.
+local function text_from_file(fname)
   if file_exists(fname) then
     local file = io.open(fname, "r")
     local text = file:read("*a")
@@ -31,8 +33,8 @@ function text_from_file(fname)
   end
 end
 
-function get_figure_path(meta)
-  -- Find the figure and captoin directory fields from the document metadata.
+--- Find the figure and caption directory fields from the document metadata.
+local function get_figure_path(meta)
   if meta.figure_dir ~= nil then
     fig_dir = meta.figure_dir[1].text
   end
@@ -42,12 +44,21 @@ function get_figure_path(meta)
   end
 end
 
-function insert_figure_and_caption(s)
-  --[[ Finds a figure tag (`{#f:tag:i}`) and uses `tag` to find contruct
-  file names in combination with the `fig_dir` and `caption_dir` variables.
-  ]]
+--- Finds a figure tag (`{#f:tag:i}`) and uses `tag` to find construct
+--- file names in combination with the `fig_dir` and `caption_dir` variables.
+local function check_block(block_data)
+  local s
 
-  if s.text:match(patt) then
+  -- Scan through the block and figure tags
+  pandoc.walk_block(block_data, {
+    Str = function(token)
+      if token.text:match(patt) then
+        s = token
+      end
+    end,
+  })
+
+  if s ~= nil then
     local pot_tag = s.text:match(part_of_text_patt)
     local id = s.text:match(id_patt)
 
@@ -67,8 +78,8 @@ function insert_figure_and_caption(s)
 
       -- If the image file does not exist, Pandoc will replace the element with
       -- the 'description', which will be empty.
-
-      return pandoc.Image(caption, filename, fig_title)
+      local img = pandoc.Image(caption, filename, fig_title)
+      return pandoc.Figure(pandoc.Plain({ img }), { caption }, {})
     end
   end
 end
@@ -80,9 +91,8 @@ return {
     end,
   },
   {
-    Str = function(s)
-      local res = insert_figure_and_caption(s)
-      return res
+    Para = function(para)
+      return check_block(para)
     end,
   },
 }

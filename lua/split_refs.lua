@@ -1,20 +1,14 @@
---[[
-    A filter to add references into multiple reference sections in a document.
+--- A filter to add references into multiple reference sections in a document.
+---
+--- Adapted from
+--- https://github.com/pandoc/lua-filters/tree/master/multiple-bibliographies
+--- and
+--- https://github.com/databio/sciquill/tree/master/pandoc_filters/multi-refs
+---
+--- To allow duplication of reference entries between bibliographies, set
+--- split_ref_no_duplicates: false in the document metadata yaml.
 
-    Adapted from
-    https://github.com/pandoc/lua-filters/tree/master/multiple-bibliographies
-    and
-    https://github.com/databio/sciquill/tree/master/pandoc_filters/multi-refs
-
-    To allow duplication of reference entries between bibliographies, set
-    split_ref_no_duplicates: false in the document metadata yaml.
-]]
-
-if PANDOC_VERSION == nil then -- if pandoc_version < 2.1
-  error("ERROR: pandoc >= 2.1 required for refs filter")
-else
-  PANDOC_VERSION:must_be_at_least({ 2, 8 })
-end
+PANDOC_VERSION:must_be_at_least("2.17")
 
 local utils = require("pandoc.utils")
 
@@ -24,7 +18,7 @@ local meta -- Container for the document metadata
 
 local no_duplicates = true
 
--- Containers for reference data
+--- Containers for reference data
 local allrefs -- Container for all of the references in the document
 local accumulated_refids = {} -- Store for encountered reference IDs
 local split_refs = {} -- Store for all references before each div
@@ -42,16 +36,12 @@ function table.contains(table, element)
 end
 
 local function run_citeproc(doc)
-  if PANDOC_VERSION >= "2.11" then
-    local args = { "--from=json", "--to=json", "--citeproc" }
-    return utils.run_json_filter(doc, "pandoc", args)
-  else
-    return utils.run_json_filter(doc, "pandoc-citeproc", { FORMAT, "-q" })
-  end
+  local args = { "--from=json", "--to=json", "--citeproc" }
+  return utils.run_json_filter(doc, "pandoc", args)
 end
 
+--- Populate a refs div with references from the split_refs container
 local function insert_refs(div)
-  -- Populate a refs div with references from the split_refs container
   if table.contains(div.classes, ref_class) then
     div.content = split_refs[current_div]
     current_div = current_div + 1
@@ -87,9 +77,9 @@ local function make_refs_subset(allrefs, subset_ids)
   table.insert(split_refs, local_refs_subset)
 end
 
+--- Iterate through the inline and find elements with 'NormalCitation' modes
+--- and store them in accumulated_refids.
 local function accumulate(inline)
-  -- Iterate through the inline and find elements with 'NormalCitation' modes
-  -- and store them in accumulated_refids.
   for i, p in pairs(inline) do
     if p.citations ~= nil then
       for k, v in pairs(p.citations) do
@@ -101,11 +91,11 @@ local function accumulate(inline)
   end
 end
 
+--- Iterate through the div to find the one which contains `ref_class` in
+--- its classes. The current contents of accumulated_refids is deposited
+--- inside, and accumulated_refids is emptied for a new collection of
+--- references to be scraped in further iterations.
 local function populate_refs(div)
-  -- Iterate through the div to find the one which contains `ref_class` in
-  -- its classes. The current contents of accumulated_refids is deposited
-  -- inside, and accumulated_refids is emptied for a new collection of
-  -- references to be scraped in further iterations.
   for i, p in pairs(div) do
     if type(p) == "table" then
       for k, v in pairs(p) do
@@ -143,9 +133,9 @@ local function traverse_doc(doc)
   end
 end
 
+--- Filter to the references div and bibliography header added by
+--- pandoc-citeproc.
 local remove_pandoc_citeproc_results = {
-  -- Filter to the references div and bibliography header added by
-  -- pandoc-citeproc.
   Header = function(header)
     return header.identifier == "bibliography" and {} or nil
   end,
