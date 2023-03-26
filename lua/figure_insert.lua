@@ -1,17 +1,19 @@
--- pattern for finding figure references
--- Example: {#f:fig1ref:i}
+PANDOC_VERSION:must_be_at_least("2.17")
+
+--- pattern for finding figure references
+--- Example: {#f:fig1ref:i}
 local patt = "{%#%l:.+:%a}"
 local id_patt = ":(.+):"
 local part_of_text_patt = ":(%a)}"
 
--- Variables
+--- Variables
 local img_filetype = ".png"
 local img_caption_filetype = ".md"
 local fig_dir = ""
 local caption_dir = ""
 
+--- Check if a file exists.
 local function file_exists(file)
-  -- Check if a file exists.
   local f = io.open(file, "rb")
   if f then
     f:close()
@@ -19,8 +21,8 @@ local function file_exists(file)
   return f ~= nil
 end
 
+--- Get the text contents from a file.
 function text_from_file(fname)
-  -- Get the text contents from a file.
   if file_exists(fname) then
     local file = io.open(fname, "r")
     local text = file:read("*a")
@@ -31,8 +33,8 @@ function text_from_file(fname)
   end
 end
 
+--- Find the figure and caption directory fields from the document metadata.
 function get_figure_path(meta)
-  -- Find the figure and captoin directory fields from the document metadata.
   if meta.figure_dir ~= nil then
     fig_dir = meta.figure_dir[1].text
   end
@@ -42,11 +44,9 @@ function get_figure_path(meta)
   end
 end
 
+--- Finds a figure tag (`{#f:tag:i}`) and uses `tag` to find construct
+--- file names in combination with the `fig_dir` and `caption_dir` variables.
 function insert_figure_and_caption(s)
-  --[[ Finds a figure tag (`{#f:tag:i}`) and uses `tag` to find contruct
-  file names in combination with the `fig_dir` and `caption_dir` variables.
-  ]]
-
   if s.text:match(patt) then
     local pot_tag = s.text:match(part_of_text_patt)
     local id = s.text:match(id_patt)

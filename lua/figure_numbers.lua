@@ -1,17 +1,19 @@
+PANDOC_VERSION:must_be_at_least("2.17")
+
 -- pattern for finding figure references
 -- Example: {#f:fig1ref:t}
 local patt = "{%#%l:.+:%a}"
 local id_patt = ":(.+):"
 local type_patt = "{#(.+):.+:%a}"
 
--- to keep track of which figures have already been seen
+--- to keep track of which figures have already been seen
 local seen_elements = {}
 
--- storage for figure numbers arranged by figure type
+--- storage for figure numbers arranged by figure type
 local figure_numbers = {}
 
+--- get the length of a table
 local function table_length(t)
-  -- get the length of a table
   local counter = 0
   for v in pairs(t) do
     counter = counter + 1
@@ -19,8 +21,8 @@ local function table_length(t)
   return counter
 end
 
+--- check if thing is in table t
 local function in_table(t, thing)
-  -- check if thing is in table t
   for i, p in pairs(t) do
     if p == thing then
       return true
@@ -29,8 +31,8 @@ local function in_table(t, thing)
   return false
 end
 
+--- get the number of the figure with id
 local function get_figure_number(fig_table, id)
-  -- get the number of the figure with id
   for i, p in pairs(fig_table) do
     for a, b in pairs(p) do
       if a == id then
