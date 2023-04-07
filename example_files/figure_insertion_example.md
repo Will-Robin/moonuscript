@@ -37,3 +37,7 @@ This tag is placed in a figure field with a valid figure url.
 
 ![{#f:test_img:i}](Figures/test_img.png)
 
+![CAPTION TEST!](Figures/test_img.png)
+
+
+
