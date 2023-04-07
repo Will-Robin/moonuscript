@@ -22,7 +22,7 @@ local function file_exists(file)
 end
 
 --- Get the text contents from a file.
-function text_from_file(fname)
+local function text_from_file(fname)
   if file_exists(fname) then
     local file = io.open(fname, "r")
     local text = file:read("*a")
@@ -34,7 +34,7 @@ function text_from_file(fname)
 end
 
 --- Find the figure and caption directory fields from the document metadata.
-function get_figure_path(meta)
+local function get_figure_path(meta)
   if meta.figure_dir ~= nil then
     fig_dir = meta.figure_dir[1].text
   end
@@ -46,8 +46,19 @@ end
 
 --- Finds a figure tag (`{#f:tag:i}`) and uses `tag` to find construct
 --- file names in combination with the `fig_dir` and `caption_dir` variables.
-function insert_figure_and_caption(s)
-  if s.text:match(patt) then
+local function check_block(block_data)
+  local s
+
+  -- Scan through the block and figure tags
+  pandoc.walk_block(block_data, {
+    Str = function(token)
+      if token.text:match(patt) then
+        s = token
+      end
+    end,
+  })
+
+  if s ~= nil then
     local pot_tag = s.text:match(part_of_text_patt)
     local id = s.text:match(id_patt)
 
@@ -67,8 +78,8 @@ function insert_figure_and_caption(s)
 
       -- If the image file does not exist, Pandoc will replace the element with
       -- the 'description', which will be empty.
-
-      return pandoc.Image(caption, filename, fig_title)
+      local img = pandoc.Image(caption, filename, fig_title)
+      return pandoc.Figure(pandoc.Plain({ img }), { caption }, {})
     end
   end
 end
@@ -80,9 +91,8 @@ return {
     end,
   },
   {
-    Str = function(s)
-      local res = insert_figure_and_caption(s)
-      return res
+    Para = function(para)
+      return check_block(para)
     end,
   },
 }
