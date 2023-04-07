@@ -1,4 +1,6 @@
-all: output/figure_insertion_example.pdf output/include_csv_table_example.pdf \
+all: output/figure_insertion_example.pdf \
+	output/figure_insertion_example.tex \
+	output/include_csv_table_example.pdf \
 	output/figure_tags_example.pdf output/extract_comments.md \
 	output/split_bibliography_example.pdf \
 	output/wrap_fig_example.pdf
@@ -6,6 +8,10 @@ all: output/figure_insertion_example.pdf output/include_csv_table_example.pdf \
 output/figure_insertion_example.pdf: figure_insertion_example.md ../lua/figure_insert.lua
 	pandoc -f markdown -t pdf figure_insertion_example.md \
 	--lua-filter=../lua/figure_insert.lua -s -o output/figure_insertion_example.pdf
+
+output/figure_insertion_example.tex: figure_insertion_example.md ../lua/figure_insert.lua
+	pandoc -f markdown -t latex figure_insertion_example.md \
+	--lua-filter=../lua/figure_insert.lua -s -o output/figure_insertion_example.tex
 
 output/include_csv_table_example.pdf: include_csv_table_example.md ../lua/include_csv_table.lua
 	pandoc -f markdown -t pdf include_csv_table_example.md \

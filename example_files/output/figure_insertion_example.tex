@@ -1,0 +1,138 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\author{}
+\date{}
+
+\begin{document}
+
+\hypertarget{inserting-figures-and-captions-using-tags}{%
+\section{Inserting figures and captions using
+tags}\label{inserting-figures-and-captions-using-tags}}
+
+The tag below should be replaced by \texttt{test\_img.png} from the
+\texttt{Figures} directory, as defined in the \texttt{yaml} metadata
+block above.
+
+\begin{figure}
+\centering
+\includegraphics{Figures/test_img.png}
+\caption{This is a figure caption \emph{written in markdown}. Figure
+source: Hamonshū. 1, by Mori Yūzan; Yamada Geisōdō, Kyōto-shi, Meiji 36
+(1903)}
+\end{figure}
+
+The tag below does not have a file associated with it, and so will not
+be replaced:
+
+\begin{figure}
+\centering
+\includegraphics{Figures/dead_link.png}
+\caption{}
+\end{figure}
+
+The \texttt{:i} component of the tag indicates that it should be
+replaced by a figure. Any other letter here will not result in a figure
+insertion.
+
+\hypertarget{examples}{%
+\section{Examples}\label{examples}}
+
+Some more examples of what happens when the tags are placed in varying
+parts of the markdown are given below.
+
+This tag is placed in an inline code field.
+
+\texttt{\{\#f:test\_img:i\}}
+
+This tag is placed in a code block:
+
+\begin{verbatim}
+{#f:test_img:i}
+\end{verbatim}
+
+This tag is placed in a figure field with an empty figure url.
+
+\begin{figure}
+\centering
+\includegraphics{}
+\caption{\{\#f:test\_img:i\}}
+\end{figure}
+
+This tag is placed in a figure field with a valid figure url.
+
+\begin{figure}
+\centering
+\includegraphics{Figures/test_img.png}
+\caption{\{\#f:test\_img:i\}}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics{Figures/test_img.png}
+\caption{CAPTION TEST!}
+\end{figure}
+
+\end{document}
